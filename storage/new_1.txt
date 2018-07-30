@@ -1,0 +1,137 @@
+docker run -d \
+--name mesos_slave_1 \
+--entrypoint="mesos-slave" \
+-e "MESOS_MASTER=zk://ld9576.wdf.sap.corp:2181/mesos" \
+-e "MESOS_LOG_DIR=/var/log/mesos" \
+-e "MESOS_LOGGING_LEVEL=INFO" \
+garland/mesosphere-docker-mesos-master:latest
+
+docker run -d \
+  --entrypoint="mesos-slave" \
+  -e "MESOS_MASTER=zk://${HOST_IP_1}:2181/mesos" \
+  -e "MESOS_LOG_DIR=/var/log/mesos" \
+  -e "MESOS_LOGGING_LEVEL=INFO" \
+  garland/mesosphere-docker-mesos-master:latest
+  
+ 
+
+
+critical_level:0; jenkins:!; labels:!cluster; details.distribution.name: "SUSE Linux Enterprise Server"; details.distribution.version: "12"; details.memory: >= "128GB"; details.cpus.architecture: "ppc64le"; inframon$offline:0 
+  
+  
+ld3731:~ # virsh list --all
+ Id    Name                           State
+----------------------------------------------------
+ 0     Domain-0                       running
+ 1     ldhanaxen127                   running
+ 2     ldhanaxen124                   running
+ 5     ldhanaxen125                   running
+ 7     ldhanaxen126                   running
+ -     ldhanaxen123                   shut off
+ -     ldhanaxen128                   shut off
+
+  
+  
+  
+  
+ld2754.wdf.sap.corp	2017-12-26 13:00:31	Enc 252, Slot 3, Device Id 14	Firmware state: Failed,	IBM-ESXSHUC101212CSS60 J2MCKZJGWDJHJ2MCJ2MCJ2MC	100.00
+ld9597.wdf.sap.corp	2017-12-26 13:00:14	Enc 252, Slot 2, Device Id 13	Firmware state: Failed; Media error count: 38; Predictive failure count: 47;	SEAGATE ST9600205SS 51036XR1E21L	100.00
+ld7153.wdf.sap.corp	2017-12-26 12:58:50	Enc 252, Slot 5, Device Id 11	Firmware state: Failed; Media error count: 48; Predictive failure count: 14;	IBM-ESXSST9600205SS B55C6XR37K8V0808B55C	100.00
+ld9525.wdf.sap.corp	2017-12-26 12:56:54	Enc 252, Slot 4, Device Id 7	Firmware state: Failed; Predictive failure count: 286;	SEAGATE ST9600205SS 51036XR1Y8QW	100.00
+ld9524.wdf.sap.corp	2017-12-26 12:57:38	Enc 252, Slot 7, Device Id 11	Firmware state: Failed;	SEAGATE ST9600205SS 51036XR41VGK	100.00
+ld8598.wdf.sap.corp	2017-12-26 13:02:36	Enc 252, Slot 1, Device Id 16	Media error count: 117092; Other disk error count: 91; Predictive failure count: 19;	WD WD9001BKHG-50D22SF0AWD-WX71E34SKC60	80.00
+ld4498.wdf.sap.corp	2017-12-26 12:54:39	Enc 252, Slot 0, Device Id 9	Media error count: 789; Other disk error count: 25;	HGST HUC101812CSS204 C7L00EGZLPBF	80.00
+ld2756.wdf.sap.corp	2017-12-26 13:02:06	Enc 252, Slot 5, Device Id 6	Media error count: 125573; Predictive failure count: 25;	IBM-ESXSHUC101212CSS60 J2MAKZJB455HJ2MAJ2MAJ2MA	80.00
+ld7452.wdf.sap.corp	2017-12-26 13:01:25	Enc 252, Slot 5, Device Id 10	Media error count: 509; Predictive failure count: 23;	SEAGATE ST9600205SS 51036XR3EVQM	80.00
+ld7353.wdf.sap.corp	2017-12-26 12:54:53	Enc 252, Slot 3, Device Id 3	Media error count: 237; Predictive failure count: 120;	IBM-ESXSST9600205SS B55C6XR3KN3M0808B55C	50.00
+
+ld2754.wdf.sap.corp
+ld9597.wdf.sap.corp
+ld7153.wdf.sap.corp
+ld9525.wdf.sap.corp
+ld9524.wdf.sap.corp
+ld8598.wdf.sap.corp
+ld4498.wdf.sap.corp
+ld2756.wdf.sap.corp
+ld7452.wdf.sap.corp
+ld7353.wdf.sap.corp
+
+ld2754;ld9597;ld7153;ld9525;ld9524;ld8598;ld4498;ld2756;ld7452;ld7353
+
+ld2754,ld9597,ld7153,ld9525,ld9524,ld8598,ld4498,ld2756,ld7452,ld7353
+
+
+
+
+Hello Team,
+
+Please check now, it should work.
+
+Before it is exported with this host : 10.77.105.11, where it is not pingable from storage side.
+Now we exported with this host: 10.70.208.226, where it is pinging and file system has full access.
+Apart from this, we are not seeing any issues.
+
+
+
+                                         Policy    Policy       Rule
+Path                          Policy     Owner     Owner Type  Index Access
+----------------------------- ---------- --------- ---------- ------ ----------
+/                             default    derotvs0005_root volume   1 read
+/derotvi0029a_TIP             derotvi0029_TIP derotvi0029a_TIP volume 123 read
+/derotvi0029a_TIP/q_files     derotvi0029_TIP derotvi0029a_TIP volume 123 read-write
+3 entries were displayed.
+
+derotnpc0002::>
+derotnpc0002::>
+
+
+derotnpc0002::>   -lif derotvi0029 -destination 10.70.208.226
+  (network ping)
+10.70.208.226 is alive
+
+derotnpc0002::>   -lif derotvi0029 -destination 10.77.105.11
+  (network ping)
+no answer from 10.77.105.11
+
+derotnpc0002::>
+
+
+--
+Regards
+Venkata Naga Durga Ravikumar Mavuri.
+Storage Team.
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
