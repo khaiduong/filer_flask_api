@@ -1,5 +1,7 @@
 #!filer/bin/python
 import os
+import filecmp
+import shutil
 from flask import Flask, request, redirect, url_for, send_from_directory, abort, jsonify
 from werkzeug import secure_filename
 
@@ -28,22 +30,40 @@ def list_files():
 
 def allowed_file(filename):
     """This function verify whether the given file is allowed to upload to server"""
-    # name, ext = os.path.splitext(filename)
-    #if not ext:
-        #return True
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def __CheckIdenticalFile(filename, directory):
+    files = os.listdir(directory)
+    isIdentical = False
+    if files and os.path.exists(directory):
+        for f in files:
+            isIdentical |= filecmp.cmp(filename, os.path.join(directory, f))
+    return isIdentical
+
 
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        temp_dir = "/tmp/tmp/"
+        app.config['TMP_DIR'] = temp_dir
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
         file = request.files['file']
         if file and allowed_file(file.filename):
             app.logger.info('**found file %s' % file.filename)
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # for browser, add 'redirect' function on top of 'url_for'
-            return redirect(url_for('uploaded_file', filename=filename))
+            file.save(os.path.join(app.config['TMP_DIR'], filename))
+            if not __CheckIdenticalFile(os.path.join(app.config['TMP_DIR'], filename), app.config['UPLOAD_FOLDER']):
+                shutil.copyfile(os.path.join(app.config['TMP_DIR'], filename), os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                app.logger.info("Removing tmp file from tmp filesystem")
+                os.remove(os.path.join(app.config['TMP_DIR'], filename))
+                # for browser, add 'redirect' function on top of 'url_for'
+                return redirect(url_for('uploaded_file', filename=filename))
+            app.logger.info("removing tmp file %s" % filename)
+            os.remove(os.path.join(app.config['TMP_DIR'], filename))
+            return "File already exists!!!!!!!!!!!!!!"
     return """
     <!doctype html>
     <title>Upload new File</title>
@@ -60,7 +80,7 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
-@app.route('/deleteItem/<item>', methods=['GET', 'POST'])
+@app.route('/deleteItem/<item>', methods=['DELETE'])
 def delete_item(item):
     """This functuon will help to remove a file by name from filer"""
     filename = os.path.join(UPLOAD_FOLDER, item)
